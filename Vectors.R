@@ -339,4 +339,66 @@ mean(x,na.rm = T) #na removed equals to true
 x <- c(88,NULL,12,168,13)
 mean(x) #Outputs mean as NULL means element does not exist 
 
-#Filtering
+#Filtering allows us to extract a vector's elements that satisfy certain conditions that satisfy a certain condition
+z <- c(5,2,-3,8)
+w <- z[z*z > 8]  #Our intent is to extract all elements whose squares are greater than 8
+w
+z*z > 8 #Our intent here is to evaluate the code, this will output boolean true or false per element the argument is applied to.
+
+#NOTE Z*Z > 8 IS THE SAME AS ">"(Z*Z,8)
+
+z[c(TRUE,FALSE,TRUE,TRUE)]
+
+
+z <- c(5,2,-3,8)
+j <- z*z > 8
+j
+
+
+y <- c(1,2,30,5)
+j <- z*z > 8
+y[j]
+#OR
+y[z*z > 8] #Remember z*z > 8 was set to j
+
+#In above vector z was used to determine the indices to use in filtering vector y
+
+x[x > 3] <- 0 #All elements set to x and  > 3 are now set to 0 
+
+#Filtering can also be done with the subset() function
+
+x <- c(6,1:3,NA,12)
+x #Outputs everything including NA
+x[x > 5] #Outputs elements set to x and greater than 5 including NA
+subset(x,x > 5) #Outputs elements set to x and greater than 5, excluding NA.
+
+#The selection function finds the position at which the condition occurs
+
+z <- c(5,2,-3,8)
+which(z*z > 8) #Outputs position of elements where z*z is greater than 8
+
+#determining the location within a vector at which the first occurrence of some condition holds
+first1 <- function(x) {
+  for (i in 1:length(x)) {
+    if (x[i] == 1) break # break out of loop
+  }
+  return(i)
+} #OR
+
+first1a <- function(x) return(which(x == 1)[1])
+
+
+#VECTORIZED IF-THEN-ELSE
+
+ifelse(b,u,v)  #b is a Boolean vector, u and v are vectors
+
+x <- 1:10
+x
+y <- ifelse(x %% 2 == 0, 5,12) #produces a 5 wherever x is even or 12 wherever x is odd
+y
+
+x <- c(5,2,9,12)
+x
+ifelse(x > 6, 2*x,3*x) #Outputs elements of x multiplied by 2 or 3 depending on whter the element is greater than 6 
+#REMEMBER IN ABOVE THE X>6 AND X%%2==0 IS A VECTOR OF BOOLEANS 
+
