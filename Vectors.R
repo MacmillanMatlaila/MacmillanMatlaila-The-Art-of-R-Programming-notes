@@ -272,4 +272,71 @@ predc <- function(x,k) {
   return(mean(abs(pred-x[(k+1):n])))
 } 
 
-csx <- c(0,cumsum(x)) #d in order to handle the case i=1 correctly, there's the prepending of a 0 in the vector of cumulative sums
+csx <- c(0,cumsum(x)) # in order to handle the case i=1 correctly, there's the prepending of a 0 in the vector of cumulative sums
+
+
+#Vectorized Operations help us achieve speed in R
+#function applied to a vector is actually applied individually to each element
+
+#Vector in/ Vector out
+
+u <- c(5,2,8)
+v <- c(1,3,9)
+u > v  #Outputs TRUE/FALSE depending on if element meets argument
+
+w <- function(x) return(x+1)
+w(u)  #R function uses vectorized operations, it, too, is vectorized, thus enabling a potential speedup
+
+#Let’s apply the function for rounding to the nearest integer
+
+y <- c(1.2,3.9,0.4)
+z <- round(y) #Rounds to the nearest integer
+z
+
+
+y <- c(12,5,13)
+'+'(y,4) #Adds 4 element wise, 4 is a single element therefore it was recycled until it was the same length as y
+
+#Let’s consider vectorized functions that appear to have scalar arguments
+
+f <- function(x,c) return((x+c)^2)
+f(1:3,0)
+f(1:3,1) #Through recycling x+c for f(1:3,1)becomes 1 2 3 + 1 1 1
+
+f(1:3,1:3) #Through recycling this becomes (x(1 2 3 + 1 1 1) + c(1  2 3 + 1 1 1))^2 
+
+#To restrict c to scalars
+
+f <- function(x,c) {
+  if (length(c) != 1) stop("vector c not allowed")
+  return((x + c)^2)
+}
+
+f(1:3,1)
+
+#Vector In/Matrix Out
+# Calling sqrt() on a number gives us a number. If we apply this function to an eight-element vector, we get eight numbers, thus another eightelement vector, as output
+
+z12 <- function(z) return(c(z,z^2))
+z12(5) #Outputs a 2 element vector instead of the 1 we usually get
+z12(1:8) #Applied to an 8 element (1:8) it outputs 16 numbers
+matrix(z12(1:8),ncol=2) #Outputs a matrix of 8 rows and 2 columns
+
+z12 <- function(z) return(c(z,z^2))
+sapply(1:8,z12) #sapply(x,f) applies the function f() to each element of x and then converts the result to a matrix
+
+#NA and NULL
+#In statistical data sets, we often encounter missing data, which we represent in R with the value NA
+#NULL, on the other hand, represents that the value in question simply doesn’t exist, rather than being existent but unknown
+
+#instruct the function to skip over any missing values, or NAs
+
+x <- c(88,NA,12,168,13)
+x  #Outputs each element as is including NA
+
+mean(x) #Outputs NA because not all data is known therefore mean cannot be calculated
+mean(x,na.rm = T) #na removed equals to true
+x <- c(88,NULL,12,168,13)
+mean(x) #Outputs mean as NULL means element does not exist 
+
+#Filtering
