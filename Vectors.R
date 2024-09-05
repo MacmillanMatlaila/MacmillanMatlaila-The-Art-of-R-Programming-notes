@@ -93,7 +93,7 @@ x+c(1,2)
 #In above example x has 6 elements therefore adding it to a 2 element vector forces the 2 element vector to repeat/recycle
 #In other words c(1,2,1,2,1,2) until its also length 6
 
-#AS MATRICES:
+#AS MATRICES: #the book gives an examples
 
 
 
@@ -144,5 +144,132 @@ z[1:length(z)-1] #Picks all elements in z from 1 through the entire length of z 
 #seq() generates a sequence in arithmetic progression
 
 seq(from=12, to=30, by=3) #Outputs 12:30 but sort of like : "a+3,b+3,c+3, d+3 and so on" until 30
+x <- c(5,12,13)
+x
+seq(x) #Outputs the sequential order of the x elements 
+1:length(x) #Outputs same as seq(x) but from 1st element
+integer(0)
+
+#Repeating vector constraints with rep()
+#The rep() function allows us to put the same constant into long vectors
+#You call it with rep(x,times) with x being the variable the data has been set to
+
+x <- rep(8,4) #The rep() function is assigned to x ,the element to be repeated is 8 and 4 is the number of repetitions 
+x
+
+rep(c(5,12,13),each=12) #Repeats concatenated elements each 12 times
+
+#Using all() and any to report if arguments are true
+
+x <- 1:10
+any(x>8) #Outputs TRUE if there are ANY elements in x greater than 8
+all(x>8) #Outputs FALSE if ALL elements in x are not  greater than 8
+
+#EXTENDED EXAMPLS PAGE 61 - PAGE 65 BEFORE VECTORISED OPERATIONS
+
+#- Finding runs  of consecutive 1s in vectors consisting of only 1s and 0s
+#the vector(1,0,0,1,1,1,0,1,1) has a run of 1s of length 3 starting at index 4 and length 2 starting at index 5 and another run of 1s of length 2 starting at index 8
+
+findruns <- function(x,k){
+  n <- length(x)
+  runs <- NULL
+  for (i in 1:(n-k+1)) {
+    if(all(x[i:(i+k-1)]==1)) runs <- c(runs,i)
+    
+  }
+  return(runs)
+}
+
+findruns(c(1,0,0,1,1,1,0,1,1),2) #Outputs the runs 
+
+#The expression x[i:(i+k-1)] gives us a range in x
+#applying all() then tells us if there is a run there
+
+y <- c(1,0,0,1,1,1,0,1,1)
+findruns(y,3) #Find the index of 3 runs in y, it will output th index
+findruns(y,2)
+findruns(y,6)
+
+#Preallocating memory space to avoid code slowing down
+
+findruns1 <- function(x,k){
+  n <- length(x) #Set up a space of vector length n which avoids new allocation during loop execution
+  runs <- vector(length=n)
+  count <- 0
+  for (i in 1:(n-k+1)){
+    if (all(x[i:(i+k-1)]==1)){
+      count <- count +1
+      runs[count] <- i #Merely fill runs
+    }
+  }
+  if (count > 0) {
+    runs <- runs[1:count] #Redefine runs to remove unused portion of the vector
+  } else runs <- NULL
+  return(runs)
+}
 
 
+#Observing 0 and 1 data values 
+#1 for rain
+#0 for no rain
+#For some number k, predict tomorrow's weather based on the weather record of the last k days 
+#Using majority rule: if 1s in previous k days is k/2, next value is predicted to be 1 otherwise its predicted to be 0
+# for example if k = 3 meaning its 3 days and the data is 1,0,1 next is predicted as 1
+#A training set is known data which increases reliability of data by helping us choose a range for k
+
+#Suppose we have 500 days of data and k=3
+#Predict each day in our data from previous 3 days
+#Compare prediction with known values
+#Error rate is k = 3
+#do the same for k = 1, k = 2, k = 4 and so on
+
+preda <- function(x,k) {
+  n <- length(x)
+  K2 <- K/2
+  pred <- vector(length=n-k) #The vector pred will contain our predicted values
+  for (i in 1:(n-k)) {
+    if (sum(x[i:(i+(k-1))]) >= k2) pred[i] <- 1 else pred[i] <- 0 
+  } #This predicts day i+k and stores the prediction in pred[i] from k days previous to it
+  return(mean(abs(pred-x[(k+1):n]))) #here pred contains predicted values and x[(k+1):n] contains the actual values of those days
+} #Subtracting x[(k+1):n] from pred gives us 0,1 or -1 with 1 and -1 corresponding to prediction error
+  #abs() gives us 0 and 1, the latter corresponding to errors
+  #mean() calculates the proportion of errors
+#Among those days we need to count the 1s
+sum(x[i:(i+(k-1))]) #The number of 1s
+
+#rewriting the above code to take advantage of previous computation
+predb <- function(x,k) {
+  n <- length(x)
+  k2 <- k/2
+  pred <- vector(vector=n-k)
+  sm <- sum(x[1:k])
+  if (sm >= k2) pred[1] <- 1 else pred[1] <- 0
+  if (n-k >= 2) {
+    for (i in 2:(n-k)) {
+      sm <- sm + x[i+k-1] - x[i-1] #Here, we are updating sm, by subtracting the oldest element making up the sum (x[i-1]) and adding the new one (x[i+k-1])
+      if (sm >= k2) pred[i] <- 1 else pred[i] <- 0
+    }
+  }
+  return(mean(abs(pred-x[(k+1):n])))
+}
+
+#We can alternatively also use cumsum()
+
+y <- c(5,2,-3,8)  
+cumsum(y) #Outputs 5 7 4 12. 5=5; 7=5+2; 4=7-3; 12=4+8
+
+#Expression sum(x[i:(k-1)]) in preda() uses differences of cumsum()
+
+predc <- function(x,k) {
+  n <- length(x)
+  k2 <- k/2
+  # the vector red will contain our predicted values
+  pred <- vector(length=n-k)
+  csx <- c(0,cumsum(x))
+  for (i in 1:(n-k)) {
+    if (csx[i+k] - csx[i] >= k2) pred[i] <- 1 else pred[i] <- 0
+  } #(csx[i+k] - csx[i] instead of sum(x[i:(i+(k-1))]
+  return(mean(abs(pred-x[(k+1):n])))
+} 
+
+csx <- c(0,cumsum(x)) #d in order to handle the case i=1 correctly, there's the prepending of a 0 in the vector of cumulative sums
