@@ -1,3 +1,9 @@
+###ALL R PROGRAMMERS MUST FIND THEIR OWN "HAPPY MEDIUM" IN TRADING BREVITY FOR CLARITY
+###IT IS BOTH OKAY AND NOT OKAY TO FULLY UNDERSTAND THE CODE BUT TO GRASP THE IDEA AND USE CASE THE CODE COULD APPLY TO
+###THIS WAY YOU WON'T GIVE UP DUE TO CONFUSION
+###SO IF YOU ARE LOST IN THE DOMINION OF FUNCTIONS THINK OF HOW THIS COULD BE USED IN AN EXAMPLE FAMILIAR TO YOU
+
+
 #The fundamental data type in R
 
 #Recycling - The automatic lengthening of vectors in certain settings
@@ -399,6 +405,122 @@ y
 
 x <- c(5,2,9,12)
 x
-ifelse(x > 6, 2*x,3*x) #Outputs elements of x multiplied by 2 or 3 depending on whter the element is greater than 6 
+ifelse(x > 6, 2*x,3*x) #Outputs elements of x multiplied by 2 or 3 depending on where the element is greater than 6 
 #REMEMBER IN ABOVE THE X>6 AND X%%2==0 IS A VECTOR OF BOOLEANS 
 
+#A measure of Association on Page 75
+
+#In assessing the statistical relation of two variables,measures have various motivations, such as  robustnessto outliers.
+#The standard correlation measure (Pearson product-moment correlation)
+#Alternatives include the Spearman rank correlation
+
+#E.g vector x and vector y are time series for measurements of air temperature once per hour
+
+findud() #converts vector v to 1s and 0s representing an element increasing or not increasing relative to th previous
+#Output length is 1 less than input
+
+#The measure of association action time x and y increase or decrease together
+
+#The proportion of i for which y[i+1]-y[i] has the same sign as x[i+1]-x[i]:
+
+findud <- function(v){
+  vud <- v[-1] -v[-length(v)]
+  return(ifelse(vud > 0,1, -1))
+}
+
+udcorr <- function(x,y){
+  ud <- lapply(list(x,y),findud)
+  return(mean(ud[[1]] == ud[[2]]))
+}
+
+x <- c(5,12,13,3,6,0,1,15,16,8,88)
+y <- c(4,2,3,23,6,10,11,12,6,3,2)
+
+#Reading the data pay attention to where the values in x increasing from the previous corresponds to the same association with a similar thing happening in y
+#For example at index 2 to 3 of x, elements are:12 to 13 increase
+#Similarly at index 2 to index 3 of y there was an increase from element 2 to element 3
+#This shows a corresponding increase at the same indices and that is what we are paying attention to
+
+#In terms of decreasing together, meaning in correspondence to each other
+
+#That increase from index 2 to index 3 matches that there is also an increase in y from index 2 to 3
+#lapply returns a list
+#return(mean(ud[[1]] == ud[[2]])) finds the fraction of matches
+#Watch youtube videos to understand the code above
+
+#Recoding an Abalone Data Set
+
+g <- c("M","F","F","I","M","M","F") #Gender is coded as "M","F" or "I"
+ifelse(g == "M",1,ifelse(g == "F",2,3)) #We recode the characters "M","F","I" AS 1, 2, 3
+args(ifelse) #Finds the formal argument names in function ifelse()
+#Outputs functon(test, yes, no) NULL
+#ifelse() executed first testing g == "M", yes is 1
+#No is result of executing ifelse(g== "F", 2,3)
+#Executing ifelse(g == "M") test 1 is true so the generated answer is 1
+#Test 2 is false so R looks for number 2 thus executes inner ifelse(g == "F",2,3))
+
+#Say our abalone data is stored in the matrix ab
+#with gender in the first column
+
+ab[,1] <- ifelse(ab[,1] == "M",1,ifelse(ab[,1] == "F",2,3))
+
+#Suppose we wish to form subgroups according to gender 
+#We could use which() to find the element numbers corresponding to M, F, and I:
+
+m <- which(g == "M")
+f <- which(g == "F")
+i <- which(g == "I")
+
+#Saving the groups in a list
+
+grps <- list()
+for (gen in c("M","F","I")) grps[[gen]] <- which(g==gen)
+grps
+
+
+#Using our recoded data to draw some graphs, exploring the various variables in the abalone data set:
+#Adding headers to file:
+#Headers are: Gender,Length,Diameter,Height,WholeWt,ShuckedWt,ViscWt,ShellWt,Rings
+
+#Plot diameter versus length 
+#with a separate plot for males and females
+
+aba <- read.csv("abalone.data",header = T,as.is = T)
+grps <- list()
+for (gen in c("M","F")) grps[[gen]] <- which(aba==gen)
+abam <- aba[grps$M,]
+abaf <- aba[grps$F,]
+plot(abam$Length,abam$Diameter)
+plot(abaf$Length,abaf$Diameter,pch="x",new=FALSE)
+
+#aba <- read.csv("abalone.data",header = T,as.is = T) reads in the data set and sets it to variable aba
+#abam <- aba[grps$M,] and abaf <- aba[grps$F,] are form to correspond to male and female
+#THEN WE CREATE THE PLOTS
+#To superimpose new=FALSE
+#This instructs R to not create a new graph
+
+
+#TESTING WHETHER 2 VECTORS ARE EQUAL
+
+x <- 1:3
+y <- C(1,3,4)
+
+x==y #The NAIVE approach
+
+all(x==y)
+#Applying all() to the result of == asks whether all of the elements of the latter are true
+#which is the same as asking whether x and y are identical
+
+identical(x,y)
+
+#BEWARE
+#applying identical() to 1:3 and c(1,2) will yield false because int are not the same as floating-point numbers
+
+
+#VECTOR ELEMENT NAMES KINDA EASY AND STRIGHTFORWARD
+
+> x <- c(1,2,4)
+> names(x) <- c("a","b","ab") #Sets "a" as name of 1 in x and so on
+> x["b"] #outputs name b and the element in x it has been assigned to 
+b #Name assigned to 2 in x
+2 #2 in x
