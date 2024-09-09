@@ -22,3 +22,9 @@ m <- matrix(c(1,2,3,4,5,6),nrow=2, byrow=T)
 #sets concatenated matrix to m and forces R to go byrow instead of columns
 
 
+#Example : Image Manipulation
+
+library(pixmap)
+mtrush1 <- read.pnm("mtrush1.pgm")
+mtrush1
+
