@@ -524,3 +524,6 @@ identical(x,y)
 > x["b"] #outputs name b and the element in x it has been assigned to 
 b #Name assigned to 2 in x
 2 #2 in x
+
+#This wekend revise vrything up to page 83
+
