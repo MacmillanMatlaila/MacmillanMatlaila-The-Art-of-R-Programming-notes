@@ -19,3 +19,7 @@ y[row number,column number] <- Elements I want to inser at row number, column nu
 
 y[c(first row, other row), ] <- matrix(c(element to insert in row 1, element to insert in other row, element to insert in row 1, element to insert in other row))
 
+
+####---------------------------------------#############
+
+#
