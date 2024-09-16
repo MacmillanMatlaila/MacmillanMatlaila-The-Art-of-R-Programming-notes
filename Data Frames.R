@@ -70,7 +70,7 @@ db <- read.csv("DB",header=FALSE,stringsAsFactors=FALSE)
 for (col in 1:6)
   print(unique(sort(da[,col])))
 #Merge the two data frames, matching by employee ID
-mrg <- merge(da,db,by.x=1,by.y=1) #You can use field names here instad of numbers
+mrg <- merge(da,db,by.x=1,by.y=1) #You can use field names here instead of numbers
 
 #Running a logistic regression model,predicting gender from the other eight variables: height, weight,rings, and so on, one at a time.
 aba <- read.csv("abalone.data",header=T)
