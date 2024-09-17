@@ -117,3 +117,136 @@ y
 #x | y     Boolean OR for vectors (vector x,y,result)
 #!x        Boolean negation
 
+
+#Return values
+
+oddcount
+function(x) {
+  k <- 0 # assign 0 to k
+  for (n in x) {
+    if (n %% 2 == 1) k <- k+1 # %% is the modulo operator
+  }
+  return(k) #Returns the count of odd numbers set to k
+}
+
+#Preferably and alternatively in R we do not use the return but we do call at th end , return is not necessarry but it helps you understand.
+#The code above with return() and the code below without it accomplish the same thing in R
+
+oddcount <- function(x) {
+  k <- 0
+  pagebreak
+  for (n in x) {
+    if (n %% 2 == 1) k <- k+1
+  }
+  k
+}
+
+#Returning complex Objects
+
+function(){
+  t <- function(x) return(x^2)
+  return(t)
+}
+
+
+#Functions are Objects
+
+g <- function(x){#First argument here is just x
+  return(x+1)#Second argument of the class expression
+}
+
+#The right hand side above creates a function object assigned to g on the left hand side
+
+#Since objects are functions you can assign them and use them as arguements
+
+f1 <- function(a,b) return(a+b)
+f2 <- function(a,b) return(a-b)
+f <- f1
+f(3,2) #a=3 and b=2 remember function(a,b) and that f1 was stored in f
+
+g <- function(h,a,b) h(a,b)
+g(f1,3,2) #f1 returns a+b a=3 and b=2 therefore does the same thing
+
+#You can loop through a list consisting of several functions since functions are objects
+
+#A loop to plot the same functions on a graph
+
+g1 <- function(x) return(sin(x))
+g2 <- function(x) return(sqrt(x^2+1))
+g3 <- function(x) return(2*x -1)
+plot(c(0,1),c(-1,1.5)) #X AND Y RANGES SPECIFIED???
+for (f in c(g1,g2,g3)) plot (f,0,1, add = T) #add plot to existing graph
+
+
+#Environment and Scope
+
+#The top level is known as the interpreter command prompt
+
+#Scope Hierarchy
+
+w <- 12
+f <- function(y){ #function f() has been created at top level
+  d <- 8 #d is local to f()
+  h <- function(){ #h is local to f()
+         return(d*(w+y)) #y, d and h are global to each other within their locality f()
+}    return(h())
+}
+
+#Functions have almost no side effects
+
+#This is because functions do not change non local variables
+
+#A function to DISPLAY the contents of a call frame
+
+f <- function(){
+  a <- 1
+  return(g(a)+a)
+}
+
+g <- function(aa){
+  b <- 2
+  aab <- h(aa+b)
+  return(aab)
+}
+
+h <- function(aaa){
+  c <- 3
+  return(aaa+c)
+}
+
+#showframe() to g()
+
+g <- function(aa){
+  b <- 2
+  showframe(0)
+  showframe(1)
+  aab <- h(aa+b)
+  return(aab)
+}
+
+#The showframe() function has one argument, upn, which is the number of frames to go up the call stack
+
+#--------------------
+
+x <- c(13,5,12)
+x <- sort(x)
+x
+
+#An example is the following function, which determines the indices of odd and even numbers in a vector of integers
+
+oddevens
+function(v){
+  odds <- which(v %% 2 == 1)
+  evens <- which(v %% 2 == 1)
+  list(o=odds,e=evens)
+}
+
+#Writing to Nonlocals with assign()
+
+function(u) {
+  assign("u",2*u,pos=.GlobalEnv)
+  z <- 2*z
+}
+
+#Discrete-Event simulation in R
+
