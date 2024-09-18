@@ -248,5 +248,61 @@ function(u) {
   z <- 2*z
 }
 
-#Discrete-Event simulation in R
+#Discrete-Event simulation(DES) in R
 
+#The state of the system changes in quantities rather than continously
+#Maintenance of the event list is central to DES
+#Event list is simply a list of scheduled events and not the data type
+
+#In the ATM example, for instance, the event list might at some point in the simulation look like this:
+
+#customer 1 arrives at time 23.12
+#customer 2 arrives at time 25.88
+#customer 3 arrives at time 25.97
+#customer 1 finishes service at time 26.02
+
+#Here is a summary of the library functions:
+ 
+#schedevnt(): Inserts a newly created event into the event list.
+#getnextevnt(): Pulls the earliest event off the event list.
+#dosim(): Includes the core loop of the simulation. Repeatedly calls getnextevnt() to get the earliest of the pending events; updates the current simulated time, sim$currtime, to reflect the occurrence of that event; and calls the application-specific function reactevnt() to process this newly occurred event.The code uses the following application-specific functions:
+#initglbls(): Initializes the application-specific global variables.
+#reactevnt(): Takes the proper actions when an event occurs, typically generating new events as a result.
+#prntrslts(): Prints the application-specific results of the simulation.
+
+#ACTUAL CODE
+
+dosim <- function(initglbls,reactevnt,prntrslts,maxsimtime,apppars=NULL,dbg=FALSE){
+  
+  
+#Recursion
+#A recursive function calls itself. If you have not encountered this concept before, it may sound odd, but the idea is actually simple.
+  
+#To solve a problem of type X by writing a recursive function f():
+    
+  #1. Break the original problem of type X into one or more smaller problems of type X.
+  #2. Within f(), call f() on each of the smaller problems.
+  #3. Within f(), piece together the results of (b) to solve the original problem.
+  
+
+
+#quicksort is an algorith used to sort a vector of numbers from smallest to numbers 
+  
+  qs <- function(x) {
+    if (length(x) <= 1) return(x) #The termination condition
+    pivot <- x[1]
+    therest <- x[-1]
+    sv1 <- therest[therest < pivot]
+    sv2 <- therest[therest >= pivot]
+    sv1 <- qs(sv1)
+    sv2 <- qs(sv2)
+    return(c(sv1,pivot,sv2))
+  }
+  
+#Binary search tree(left for another time)
+  
+#Done until page 215 computer wise pdf
+  
+  
+  
+  
